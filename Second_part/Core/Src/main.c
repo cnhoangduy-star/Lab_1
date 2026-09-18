@@ -32,7 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define EXERCISE 9      // đổi số để chọn bài muốn chạy
+#define EXERCISE 10
+#define TICK_MS  1000   // 1000 = giờ thật; đổi thành 10 để tua nhanh khi demo
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,7 +44,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+int hour = 3, minute = 25, second = 47;   // giờ bắt đầu
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +71,14 @@ void setNumberOnClock(int num) {
 void clearNumberOnClock(int num) {
   if (num < 0 || num > 11) return;
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4 << num, GPIO_PIN_SET);    // 1 = tắt
+}
+
+// Bài 10: vẽ lại 3 kim lên đồng hồ
+void displayClock(int h, int m, int s) {
+  clearAllClock();
+  setNumberOnClock(h % 12);   // kim giờ
+  setNumberOnClock(m / 5);    // kim phút
+  setNumberOnClock(s / 5);    // kim giây
 }
 /* USER CODE END 0 */
 
@@ -137,6 +146,15 @@ int main(void)
 	      HAL_Delay(300);
 	    }
 	    HAL_Delay(500);
+#elif EXERCISE == 10
+    // Bài 10: đồng hồ
+    displayClock(hour, minute, second);
+    HAL_Delay(TICK_MS);
+
+    second++;
+    if (second >= 60) { second = 0; minute++; }
+    if (minute >= 60) { minute = 0; hour++; }
+    if (hour   >= 12) { hour = 0; }
 	#endif
 	  }
 	  /* USER CODE END 3 */
