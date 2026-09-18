@@ -32,6 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define EXERCISE 8      // đổi số để chọn bài muốn chạy
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -54,9 +55,14 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// Tắt cả 12 LED: đưa PA4..PA15 lên mức 1 (active-low: 1 = tắt)
 void clearAllClock(void) {
   HAL_GPIO_WritePin(GPIOA, 0xFFF0, GPIO_PIN_SET);
+}
+
+// Bật LED ở vị trí num (0 = số 12, 1 = số 1, ..., 11 = số 11)
+void setNumberOnClock(int num) {
+  if (num < 0 || num > 11) return;                              // ngoài 0..11 thì bỏ qua
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4 << num, GPIO_PIN_RESET);  // active-low: 0 = sáng
 }
 /* USER CODE END 0 */
 
@@ -98,15 +104,26 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-    // Test lần lượt từng LED: PA4 (số 12) -> PA15 (số 11)
-    for (int i = 0; i < 12; i++) {
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4 << i, GPIO_PIN_RESET);  // sáng
-      HAL_Delay(500);
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4 << i, GPIO_PIN_SET);    // tắt
-    }
-  }
-  /* USER CODE END 3 */
+	    /* USER CODE BEGIN 3 */
+	#if EXERCISE == 6
+	    // Bài 6: test từng LED
+	    for (int i = 0; i < 12; i++) {
+	      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4 << i, GPIO_PIN_RESET);
+	      HAL_Delay(500);
+	      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4 << i, GPIO_PIN_SET);
+	    }
+	#elif EXERCISE == 8
+	    // Bài 8: bật dần từng LED cho tới khi đủ vòng, rồi tắt hết
+	    for (int i = 0; i < 12; i++) {
+	      setNumberOnClock(i);
+	      HAL_Delay(300);
+	    }
+	    HAL_Delay(1000);
+	    clearAllClock();
+	    HAL_Delay(500);
+	#endif
+	  }
+	  /* USER CODE END 3 */
 }
 
 /**
