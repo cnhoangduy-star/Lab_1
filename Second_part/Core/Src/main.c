@@ -54,7 +54,10 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+// Tắt cả 12 LED: đưa PA4..PA15 lên mức 1 (active-low: 1 = tắt)
+void clearAllClock(void) {
+  HAL_GPIO_WritePin(GPIOA, 0xFFF0, GPIO_PIN_SET);
+}
 /* USER CODE END 0 */
 
 /**
@@ -86,8 +89,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  // Tắt hết 12 LED lúc khởi động (active-low: SET = tắt)
-  HAL_GPIO_WritePin(GPIOA, 0xFFF0, GPIO_PIN_SET);
+  clearAllClock();
   /* USER CODE END 2 */
 
   /* Infinite loop */
